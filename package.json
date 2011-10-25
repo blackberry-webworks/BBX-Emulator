@@ -14,6 +14,7 @@
   "main": "index",
   "dependencies": {
     "connect": "1.7.x",
+    "express": "2.5.0",
     "argsparser": "0.0.x",
     "jasmine-node": "1.0.7",
     "jWorkflow": "*"
@@ -28,5 +29,5 @@
     "LICENSE",
     "lib",
     "bin"
-  ],
+  ]
 }

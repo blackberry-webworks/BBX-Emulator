@@ -140,10 +140,7 @@ describe("webview", function () {
             spyOn(net, "Socket").andReturn(bridge);
             webview.create(ready);
             connected();
-            waits(101);
-            runs(function () {
-                expect(ready).toHaveBeenCalled();
-            });
+            expect(ready).toHaveBeenCalled();
         });
 
     });

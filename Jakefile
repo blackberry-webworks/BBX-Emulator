@@ -15,7 +15,9 @@
  */
 
 desc("run all tests in node - jake test [path,path2]");
-task('default', [], require('./lib/emulator'));
+task('default', [], function () {
+    require('./lib/emulator');
+});
 
 desc("run all tests in node - jake test [path,path2]");
 task('test', [], function () {

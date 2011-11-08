@@ -13,12 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+function _extraMocks() {
+    global.screen = {
+        height: 1600,
+        availHeight: 1600,
+        width: 1200,
+        availWidth: 1200
+    };
+
+    global.NamedNodeMap = function () {
+        return [];
+    };
+}
+
+function _setupEnv(ready) {
+    _extraMocks();
+    ready();
+}
+
 module.exports = function (done, custom) {
     var jasmine = require('jasmine-node'),
         verbose = false,
         colored = false,
-        specs = __dirname + "/../" + (custom ? custom : "test"),
-        key;
+        specs = __dirname + "/../" + (custom ? custom : "test");
 
     //HACK: this should be  taken out if our pull request in jasmine is accepted.
     jasmine.Matchers.prototype.toThrow = function (expected) {
@@ -54,16 +71,18 @@ module.exports = function (done, custom) {
         return result;
     };
 
-    for (key in jasmine) {
-        if (Object.prototype.hasOwnProperty.call(jasmine, key)) {
-            global[key] = jasmine[key];
+    _setupEnv(function () {
+        for (var key in jasmine) {
+            if (Object.prototype.hasOwnProperty.call(jasmine, key)) {
+                global[key] = jasmine[key];
+            }
         }
-    }
 
-    jasmine.executeSpecsInFolder(specs, function (runner, log) {
-        var failed = runner.results().failedCount === 0 ? 0 : 1;
-        setTimeout(function () {
-            (typeof done !== "function" ? process.exit : done)(failed);
-        }, 10);
-    }, verbose, colored);
+        jasmine.executeSpecsInFolder(specs, function (runner, log) {
+            var failed = runner.results().failedCount === 0 ? 0 : 1;
+            setTimeout(function () {
+                (typeof done !== "function" ? process.exit : done)(failed);
+            }, 10);
+        }, verbose, colored);
+    });
 };

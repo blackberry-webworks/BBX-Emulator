@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BBX Emulator</title>
+        <link href="emulator.css" type="text/css" rel="stylesheet" />
+        <script src="jquery-1.6.4.min.js" type="text/javascript"></script>
+        <script src="nowjs/now.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <iframe id="document"></iframe>
+        <script type="text/javascript">
+           now.ready(function () {
+              now.url = function (url) {
+                 $("#document").attr("src", url);
+                 console.log ("URL: " + url);
+              };
+              now.webview.location("http://www.bing.com");
+           });
+        </script>
+    </body>
+</html>

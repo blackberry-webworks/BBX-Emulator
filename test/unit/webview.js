@@ -1,8 +1,25 @@
+/*
+ *  Copyright 2011 Research In Motion Limited.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 var srcPath = __dirname + '/../../lib/';
+
 describe("webview", function () {
+    var webview = require(srcPath + 'webview');
+
     describe("create and destroy", function () {
-        var webview = require(srcPath + 'webview'),
-            constants = require(srcPath + 'constants'),
+        var constants = require(srcPath + 'constants'),
             childProcess = require('child_process'),
             net = require('net'),
             ripple,
@@ -91,16 +108,21 @@ describe("webview", function () {
         });
 
         it("opens a bridge connection", function () {
+            var message = require(srcPath + 'message');
+            spyOn(message, "init");
             spyOn(net, "Socket").andReturn(bridge);
+            
             webview.create();
+
             expect(net.Socket).toHaveBeenCalled();
+            expect(message.init).toHaveBeenCalledWith(bridge);
             expect(bridge.connect.argsForCall[0][0]).toEqual(constants.PORT);
             expect(bridge.connect.argsForCall[0][1]).toEqual(constants.HOST);
             expect(typeof bridge.connect.argsForCall[0][2]).toEqual("function");
-            expect(bridge.on.argsForCall[1][0]).toEqual("data");
+            expect(bridge.on.argsForCall[0][0]).toEqual("error");
+            expect(typeof bridge.on.argsForCall[0][1]).toEqual("function");
+            expect(bridge.on.argsForCall[1][0]).toEqual("close");
             expect(typeof bridge.on.argsForCall[1][1]).toEqual("function");
-            expect(bridge.on.argsForCall[2][0]).toEqual("close");
-            expect(typeof bridge.on.argsForCall[2][1]).toEqual("function");
         });
 
         it("tries to reconnect when a connection error occurs", function () {
@@ -120,7 +142,7 @@ describe("webview", function () {
             expect(typeof error).toEqual("function");
 
             error({code: "ECONNREFUSED"});
-            waits(501);
+            waits(510);
             runs(function () {
                 expect(bridge.connect.callCount).toEqual(2);
                 expect(bridge.end.callCount).toEqual(1);
@@ -144,60 +166,15 @@ describe("webview", function () {
         });
 
     });
+
     describe("setURL", function () {
-        var webview = require(srcPath + 'webview'),
-            childProcess = require('child_process'),
-            net = require('net'),
-            ripple,
-            bridge;
+        var message = require(srcPath + 'message');
+       
+        it("sends the WebviewUrlChangeRequest  message", function () {
+            spyOn(message, "send");
 
-        beforeEach(function () {
-            ripple = {
-                stdout: {
-                    on: jasmine.createSpy()
-                },
-                stderr: {
-                    on: jasmine.createSpy()
-                },
-                on: jasmine.createSpy(),
-                kill: jasmine.createSpy()
-            };
-            bridge = {
-                connect: jasmine.createSpy(),
-                on: jasmine.createSpy(),
-                end: jasmine.createSpy(),
-                write: jasmine.createSpy()
-            };
-            spyOn(childProcess, "spawn").andReturn(ripple);
-            spyOn(console, "log");
-        });
-
-        afterEach(function () {
-            webview.destroy();
-        });
-
-        it("doesn't write to the socket if there is no connection", function () {
-            spyOn(net, "Socket").andReturn(bridge);
-            webview.create();
-            webview.setURL("http://www.rim.com");
-            expect(bridge.write).not.toHaveBeenCalled();
-        });
-
-        it("writes to the socket when connected", function () {
-            var connected,
-                bridge = {
-                    connect: function (port, host, callback) {
-                        connected = callback;
-                    },
-                    on: jasmine.createSpy(),
-                    write: jasmine.createSpy()
-                };
-
-            spyOn(net, "Socket").andReturn(bridge);
-            webview.create();
-            connected();
             webview.setURL("http://www.github.com");
-            expect(bridge.write).toHaveBeenCalledWith("http://www.github.com");
+            expect(message.send).toHaveBeenCalledWith("WebviewUrlChangeRequest", "http://www.github.com");
         });
     });
 });  

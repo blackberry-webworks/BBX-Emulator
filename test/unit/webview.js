@@ -177,4 +177,69 @@ describe("webview", function () {
             expect(message.send).toHaveBeenCalledWith("WebviewUrlChangeRequest", "http://www.github.com");
         });
     });
+
+    describe("onRequest", function () {
+        var childProcess = require('child_process'),
+            net = require('net'),
+            event = require(srcPath + 'event'),
+            ripple;
+
+        beforeEach(function () {
+            ripple = {
+                stdout: {
+                    on: jasmine.createSpy()
+                },
+                stderr: {
+                    on: jasmine.createSpy()
+                },
+                on: jasmine.createSpy(),
+                kill: jasmine.createSpy()
+            };
+            spyOn(childProcess, "spawn").andReturn(ripple);
+            spyOn(console, "log");
+        });
+
+        afterEach(function () {
+            webview.destroy();
+        });
+
+        it("can register for and invoke callback", function () {
+            var callback = jasmine.createSpy(),
+                connected,
+                bridge = {
+                    connect: function (port, host, callback) {
+                        connected = callback;
+                    },
+                    on: jasmine.createSpy()
+                };
+
+            spyOn(net, "Socket").andReturn(bridge);
+
+            webview.create();
+            connected();
+            webview.onRequest(callback);
+            event.trigger("ResourceRequested", ["http://www.blackberry.com"], true);
+            expect(callback).toHaveBeenCalled();
+        });
+
+        it("can deregister for callback", function () {
+            var callback = jasmine.createSpy(),
+                connected,
+                bridge = {
+                    connect: function (port, host, callback) {
+                        connected = callback;
+                    },
+                    on: jasmine.createSpy()
+                };
+
+            spyOn(net, "Socket").andReturn(bridge);
+
+            webview.create();
+            connected();
+            webview.onRequest(callback);
+            webview.onRequest(null);
+            event.trigger("ResourceRequested", ["http://www.blackberry.com"], true);
+            expect(callback).not.toHaveBeenCalled();
+        });
+    });
 });  

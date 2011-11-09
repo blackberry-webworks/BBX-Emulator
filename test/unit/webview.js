@@ -170,11 +170,11 @@ describe("webview", function () {
     describe("setURL", function () {
         var message = require(srcPath + 'message');
        
-        it("sends the WebviewUrlChanged message", function () {
+        it("sends the WebviewUrlChangeRequest  message", function () {
             spyOn(message, "send");
 
             webview.setURL("http://www.github.com");
-            expect(message.send).toHaveBeenCalledWith("WebviewUrlChanged", "http://www.github.com");
+            expect(message.send).toHaveBeenCalledWith("WebviewUrlChangeRequest", "http://www.github.com");
         });
     });
 });  

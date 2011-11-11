@@ -49,7 +49,7 @@ describe("message", function () {
 
             spyOn(event, "trigger");
             message.receive(JSON.stringify(payload));
-            expect(event.trigger).toHaveBeenCalledWith(payload.event, payload.payload);
+            expect(event.trigger).toHaveBeenCalledWith(payload.event, [payload.payload]);
         });
 
         it("handles incomplete JSON payload", function () {

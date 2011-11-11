@@ -241,5 +241,30 @@ describe("webview", function () {
             event.trigger("ResourceRequested", ["http://www.blackberry.com"], true);
             expect(callback).not.toHaveBeenCalled();
         });
+
+        it("allows the request if no callback is registered", function () {
+            var request = require(srcPath + 'request'),
+                connected,
+                bridge = {
+                    connect: function (port, host, callback) {
+                        connected = callback;
+                    },
+                    on: jasmine.createSpy()
+                },
+                req = {
+                    allow: jasmine.createSpy(),
+                    deny: jasmine.createSpy()
+                };
+
+            spyOn(net, "Socket").andReturn(bridge);
+            spyOn(request, "init").andReturn(req);
+
+            webview.create();
+            connected();
+            webview.onRequest(null);
+            event.trigger("ResourceRequested", ["http://www.blackberry.com"], true);
+            expect(req.allow).toHaveBeenCalled();
+            expect(req.deny).not.toHaveBeenCalled();
+        });
     });
 });  

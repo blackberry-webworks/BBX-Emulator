@@ -24,6 +24,16 @@ task('test', [], function () {
     require('./build/test')(null, process.argv.length >= 4 ? process.argv[3] : null);
 });
 
+desc("run a sample - jake sample[sampleName]");
+task('sample', [], function (sample) {
+    if (sample) {
+        require('./samples/' + sample);
+    }
+    else {
+        fail("No sample name provided: Usage: jake sample[sampleName]");
+    }
+});
+
 desc("runs jshint + csslint - jake lint [path1] [path2]");
 task('lint', [], function () {
     require('./build/lint')(complete, Array.prototype.slice.call(arguments));

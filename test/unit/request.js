@@ -40,7 +40,10 @@ describe("request", function () {
             req.allow();
             expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
                 url: "http://www.rim.com",
-                response: "allow"
+                response: {
+                    code: 200,
+                    responseText: "allow"
+                }
             });
         });
     });
@@ -51,7 +54,38 @@ describe("request", function () {
             req.deny();
             expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
                 url: "http://www.rim.com",
-                response: "deny"
+                response: {
+                    code: 403,
+                    responseText: "deny"
+                }
+            });
+        });
+    });
+
+    describe("continue", function () {
+        it("sends the appropriate message when marking a request as continue", function () {
+            var req = request.init("http://www.rim.com");
+            req.continue();
+            expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
+                url: "http://www.rim.com",
+                response: {
+                    code: 100,
+                    responseText: "continue"
+                }
+            });
+        });
+    });
+
+    describe("respond", function () {
+        it("can takeover response to a request", function () {
+            var req = request.init("http://www.rim.com");
+            req.respond(204, "No Content");
+            expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
+                url: "http://www.rim.com",
+                response: {
+                    code: 204,
+                    responseText: "No Content"
+                }
             });
         });
     });

@@ -34,9 +34,9 @@ app.listen(8472);
 console.log('Server running at http://localhost:8472');
 
 webview.create(function () {
-    webview.onRequest(function(r) {
+    webview.onRequest(function (r) {
         console.log("onRequest");
-        if(r.url.indexOf(".png") == -1 && r.url.indexOf(".gif") == -1 && r.url.indexOf(".jpg") == -1){
+        if (r.url.indexOf(".png") === -1 && r.url.indexOf(".gif") === -1 && r.url.indexOf(".jpg") === -1) {
             r.allow();
         }
         else {
@@ -44,8 +44,8 @@ webview.create(function () {
         }
     });
 
-    setTimeout(function() {
+    setTimeout(function () {
         webview.setURL("http://www.yahoo.com");
-    }, 500)
+    }, 500);
     console.log(webview);
 });

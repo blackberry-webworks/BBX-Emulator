@@ -1,6 +1,7 @@
 {
     "predef": [ 
         "DOMDocument",
+        "NamedNodeMap",
         "$", "it", "describe",
         "xit", "xdescribe",
         "itBrowser", "describeBrowser",

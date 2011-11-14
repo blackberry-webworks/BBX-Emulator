@@ -15,7 +15,7 @@
  */
 var express = require('express'),
     app = express.createServer(),
-    webview = require('./webview');
+    webview = require('../lib/webview');
 
 app.configure(function () {
     app.use(express.bodyParser());
@@ -32,3 +32,18 @@ app.get('/webview/create', function (req, res, next) {
 app.listen(8472);
 
 console.log('Server running at http://localhost:8472');
+
+webview.create(function () {
+    webview.onRequest(function (r) {
+        if (r.url.indexOf(".png") === -1 && r.url.indexOf(".gif") === -1 && r.url.indexOf(".jpg") === -1) {
+            console.log("    ALLOW : " + r.url);
+            r.allow();
+        }
+        else {
+            console.log("    DENY  : " + r.url);
+            r.deny();
+        }
+    });
+
+    webview.setURL("http://www.github.com");
+});

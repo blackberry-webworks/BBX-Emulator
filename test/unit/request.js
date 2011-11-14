@@ -62,15 +62,15 @@ describe("request", function () {
         });
     });
 
-    describe("continue", function () {
-        it("sends the appropriate message when marking a request as continue", function () {
+    describe("substitute", function () {
+        it("sends the appropriate message when marking a request as substitute", function () {
             var req = request.init("http://www.rim.com");
-            req.continue();
+            req.substitute();
             expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
                 url: "http://www.rim.com",
                 response: {
                     code: 100,
-                    responseText: "continue"
+                    responseText: "substitute"
                 }
             });
         });
@@ -79,6 +79,7 @@ describe("request", function () {
     describe("respond", function () {
         it("can takeover response to a request", function () {
             var req = request.init("http://www.rim.com");
+            req.substitute();
             req.respond(204, "No Content");
             expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
                 url: "http://www.rim.com",
@@ -87,6 +88,24 @@ describe("request", function () {
                     responseText: "No Content"
                 }
             });
+        });
+
+        it("throws an exception if substitute has not been requested before responding", function () {
+            var req = request.init("http://www.rim.com");
+            expect(function () {
+                req.respond(204, "No Content");
+            }).toThrow();
+            expect(message.send).not.toHaveBeenCalled();
+        });
+
+        it("throws an exception when a second request has not requested substitute before responding", function () {
+            var req1 = request.init("http://www.rim.com"),
+                req2 = request.init("http://www.blackberry.com");
+
+            req1.substitute();
+            expect(function () {
+                req2.respond(204, "No Content");
+            }).toThrow();
         });
     });
 });  

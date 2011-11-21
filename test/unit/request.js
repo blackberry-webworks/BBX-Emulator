@@ -26,7 +26,10 @@ describe("request", function () {
 
     describe("init", function () {
         it("can create a new request", function () {
-            var req = request.init("http://www.rim.com");
+            var req = request.init({
+                    id: "ImTotallyUniqueISwear",
+                    url: "http://www.rim.com"
+                });
 
             expect(req.url).toBe("http://www.rim.com");
             expect(typeof req.allow).toEqual("function");
@@ -36,9 +39,14 @@ describe("request", function () {
 
     describe("allow", function () {
         it("sends the appropriate message when allowing a request", function () {
-            var req = request.init("http://www.rim.com");
+            var req = request.init({
+                    id: "ImTotallyUniqueISwear",
+                    url: "http://www.rim.com"
+                });
+
             req.allow();
             expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
+                id: "ImTotallyUniqueISwear",
                 url: "http://www.rim.com",
                 response: {
                     code: 200,
@@ -50,9 +58,14 @@ describe("request", function () {
 
     describe("deny", function () {
         it("sends the appropriate message when denying a request", function () {
-            var req = request.init("http://www.rim.com");
+            var req = request.init({
+                    id: "ImTotallyUniqueISwear",
+                    url: "http://www.rim.com"
+                });
+
             req.deny();
             expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
+                id: "ImTotallyUniqueISwear",
                 url: "http://www.rim.com",
                 response: {
                     code: 403,
@@ -62,15 +75,20 @@ describe("request", function () {
         });
     });
 
-    describe("continue", function () {
-        it("sends the appropriate message when marking a request as continue", function () {
-            var req = request.init("http://www.rim.com");
-            req.continue();
+    describe("substitute", function () {
+        it("sends the appropriate message when marking a request as substitute", function () {
+            var req = request.init({
+                    id: "ImTotallyUniqueISwear",
+                    url: "http://www.rim.com"
+                });
+
+            req.substitute();
             expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
+                id: "ImTotallyUniqueISwear",
                 url: "http://www.rim.com",
                 response: {
                     code: 100,
-                    responseText: "continue"
+                    responseText: "substitute"
                 }
             });
         });
@@ -78,15 +96,51 @@ describe("request", function () {
 
     describe("respond", function () {
         it("can takeover response to a request", function () {
-            var req = request.init("http://www.rim.com");
+            var req = request.init({
+                    id: "ImTotallyUniqueISwear",
+                    url: "http://www.rim.com"
+                });
+
+            req.substitute();
             req.respond(204, "No Content");
             expect(message.send).toHaveBeenCalledWith("ResourceRequestedResponse", {
+                id: "ImTotallyUniqueISwear",
                 url: "http://www.rim.com",
                 response: {
                     code: 204,
                     responseText: "No Content"
                 }
             });
+        });
+
+        it("throws an exception if substitute has not been requested before responding", function () {
+            var req = request.init({
+                    id: "ImTotallyUniqueISwear",
+                    url: "http://www.rim.com"
+                });
+
+            expect(function () {
+                req.respond(204, "No Content");
+            }).toThrow();
+
+            expect(message.send).not.toHaveBeenCalled();
+        });
+
+        it("throws an exception when a second request has not requested substitute before responding", function () {
+            var req1 = request.init({
+                    id: "ImTotallyUniqueISwear",
+                    url: "http://www.rim.com"
+                }),
+                req2 = request.init({
+                    id: "ImTotallyUniqueISwearToo",
+                    url: "http://www.blackberry.com"
+                });
+
+            req1.substitute();
+
+            expect(function () {
+                req2.respond(204, "No Content");
+            }).toThrow();
         });
     });
 });  

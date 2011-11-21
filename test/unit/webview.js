@@ -40,7 +40,8 @@ describe("webview", function () {
                 connect: jasmine.createSpy(),
                 on: jasmine.createSpy(),
                 end: jasmine.createSpy(),
-                write: jasmine.createSpy()
+                write: jasmine.createSpy(),
+                setNoDelay: jasmine.createSpy()
             };
             spyOn(childProcess, "spawn").andReturn(ripple);
             spyOn(console, "log");
@@ -63,7 +64,8 @@ describe("webview", function () {
                     callback();
                 },
                 on: jasmine.createSpy(),
-                end: jasmine.createSpy()
+                end: jasmine.createSpy(),
+                setNoDelay: jasmine.createSpy()
             };
 
             spyOn(net, "Socket").andReturn(bridge);
@@ -80,7 +82,8 @@ describe("webview", function () {
                         connected = callback;
                     },
                     on: jasmine.createSpy(),
-                    end: jasmine.createSpy()
+                    end: jasmine.createSpy(),
+                    setNoDelay: jasmine.createSpy()
                 };
 
             ripple.on = function (event, callback) {
@@ -134,7 +137,8 @@ describe("webview", function () {
                             error = callback;
                         }
                     },
-                    end: jasmine.createSpy()
+                    end: jasmine.createSpy(),
+                    setNoDelay: jasmine.createSpy()
                 };
 
             spyOn(net, "Socket").andReturn(bridge);
@@ -156,7 +160,8 @@ describe("webview", function () {
                     connect: function (port, host, callback) {
                         connected = callback;
                     },
-                    on: jasmine.createSpy()
+                    on: jasmine.createSpy(),
+                    setNoDelay: jasmine.createSpy()
                 };
 
             spyOn(net, "Socket").andReturn(bridge);
@@ -210,7 +215,8 @@ describe("webview", function () {
                     connect: function (port, host, callback) {
                         connected = callback;
                     },
-                    on: jasmine.createSpy()
+                    on: jasmine.createSpy(),
+                    setNoDelay: jasmine.createSpy()
                 };
 
             spyOn(net, "Socket").andReturn(bridge);
@@ -229,7 +235,8 @@ describe("webview", function () {
                     connect: function (port, host, callback) {
                         connected = callback;
                     },
-                    on: jasmine.createSpy()
+                    on: jasmine.createSpy(),
+                    setNoDelay: jasmine.createSpy()
                 };
 
             spyOn(net, "Socket").andReturn(bridge);
@@ -249,7 +256,8 @@ describe("webview", function () {
                     connect: function (port, host, callback) {
                         connected = callback;
                     },
-                    on: jasmine.createSpy()
+                    on: jasmine.createSpy(),
+                    setNoDelay: jasmine.createSpy()
                 },
                 req = {
                     allow: jasmine.createSpy(),

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Respond Demo</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <p><em>Fake feed data below should read: 'Hijacked Event'</em></p>
+        <div id="calendarFake">Requesting...</div>
+        <br/>
+        <p><em>Real feed data below should read: 'Official Google External Developer Events'</em></p>
+        <div id="calendarReal">Requesting...</div>
+
+        <script type="text/javascript">
+            $.get("http://www.google.com/calendar/feeds/developer-calendar@google.com/public/full?alt=json", function (data) {
+                    $("#calendarFake").html("<p>" + data.feed.title.$t + "</p>");
+            }, "json");
+
+            $.get("http://www.google.com/calendar/feeds/developer-calendar@google.com/public/full?alt=json", function (data) {
+                    $("#calendarReal").html("<p>" + data.feed.title.$t + "</p>");
+            }, "json");
+        </script>
+    </body>
+</html>

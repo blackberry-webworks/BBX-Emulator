@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Local Demo</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <p><em>The image below is local://icon.png</em></p>
+        <img src="local://icon.png" />
+
+        <p><em>The image below is local://in/some/directory/icon.png</em></p>
+        <img src="local://in/some/directory/icon.png" />
+
+        <p><em>The image below is local:///extra/leading/slash/icon.png</em></p>
+        <img src="local:///extra/leading/slash/icon.png" />
+
+        <p><em>The image below shouldn't exist and should return a 404</em></p>
+        <img src="local://this/path/doesnt/exist/icon.png" />
+
+        <p><em>The div below should contain 'xhr works'</em></p>
+        <div id="xhrPlaceholder"></div>
+
+        <script type="text/javascript">
+            $.get("local://index.html", function (data) {
+                $("#xhrPlaceholder").html(data);
+            });
+        </script>
+    </body>
+</html>

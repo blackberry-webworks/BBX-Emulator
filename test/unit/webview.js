@@ -275,4 +275,20 @@ describe("webview", function () {
             expect(req.deny).not.toHaveBeenCalled();
         });
     });
+
+    describe("setCustomHeaders", function () {
+        var message = require(srcPath + 'message');
+       
+        it("sends the WebviewCustomHeadersChangeRequest message", function () {
+            var headers = {
+                header1: "header1value",
+                header2: "header2value"
+            };
+
+            spyOn(message, "send");
+
+            webview.setCustomHeaders(headers);
+            expect(message.send).toHaveBeenCalledWith("WebviewCustomHeadersChangeRequest", headers);
+        });
+    });
 });  

@@ -16,7 +16,8 @@
 var srcPath = __dirname + '/../../lib/';
 
 describe("message", function () {
-    var message = require(srcPath + 'message');
+    var message = require(srcPath + 'message'),
+        DELIMITER = "<`)))><";
 
     describe("when initializing", function () {
         it("registers for the correct events", function () {
@@ -103,7 +104,7 @@ describe("message", function () {
             message.init(socket);
             connect();
             message.send(payload.event, payload.payload);
-            expect(socket.write).toHaveBeenCalledWith(JSON.stringify(payload));
+            expect(socket.write).toHaveBeenCalledWith(JSON.stringify(payload) + DELIMITER);
         });
 
         it("does not try to write to the socket when there is no connection", function () {

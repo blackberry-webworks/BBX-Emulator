@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RTSP Demo</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id="log">Requesting...</div>
+        <script type="text/javascript">
+            var request = $.ajax({
+              url: "rtsp://somefakesplace.com",
+              dataType: "json"
+            });
+
+            request.done(function(msg) {
+              $("#log").html(msg);
+            });
+
+            request.fail(function(jqXHR, textStatus) {
+              $("#log").html(JSON.parse(jqXHR.responseText).data);
+            });
+        </script>
+    </body>
+</html>

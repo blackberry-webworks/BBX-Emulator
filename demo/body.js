@@ -19,6 +19,7 @@ var express = require('express'),
 
 app.configure(function () {
     app.use(express.bodyParser());
+    console.log(__dirname);
     app.use(express.static(__dirname + '/../pub'));
 });
 
@@ -28,20 +29,18 @@ console.log('Server running at http://localhost:8472');
 
 webview.create(function () {
     webview.onRequest(function (r) {
-        if (r.origin !== "http://www.bing.com/") {
-            console.log("    ALLOW : " + r.url);
-            r.allow();
-        }
-        else if (r.url.indexOf(".png") === -1 && r.url.indexOf(".gif") === -1 && r.url.indexOf(".jpg") === -1) {
-            console.log("    ALLOW : " + r.url);
-            r.allow();
+        console.log("REQUEST: url: " + r.url);
+        if (r.url === "http://localhost:8472/somewhere/data/was/posted") {
+            console.log("    body is: " + r.body);
+            console.log("    substituing and responding");
+            r.substitute();
+            r.respond(200, JSON.stringify({got:"ya"}));
         }
         else {
-            console.log("    DENY  : " + r.url);
-            r.deny();
+            console.log("    doing its usual thing");
+            r.allow();
         }
-        console.log("       from origin: " + r.origin);
     });
 
-    webview.setURL("http://localhost:8472/iframe.html");
+    webview.setURL("http://localhost:8472/body.html");
 });

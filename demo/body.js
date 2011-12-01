@@ -34,7 +34,7 @@ webview.create(function () {
             console.log("    body is: " + r.body);
             console.log("    substituing and responding");
             r.substitute();
-            r.respond(200, JSON.stringify({got:"ya"}));
+            r.respond(200, JSON.stringify({got: "ya"}));
         }
         else {
             console.log("    doing its usual thing");

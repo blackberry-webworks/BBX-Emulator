@@ -28,12 +28,34 @@ describe("request", function () {
         it("can create a new request", function () {
             var req = request.init({
                     id: "ImTotallyUniqueISwear",
-                    url: "http://www.rim.com"
+                    url: "http://www.rim.com/icon.png",
+                    origin: "http://www.rim.com"
                 });
 
-            expect(req.url).toBe("http://www.rim.com");
+            expect(req.url).toBe("http://www.rim.com/icon.png");
+            expect(req.origin).toBe("http://www.rim.com");
+            expect(req.body).toBe(undefined);
             expect(typeof req.allow).toEqual("function");
             expect(typeof req.deny).toEqual("function");
+            expect(typeof req.substitute).toEqual("function");
+            expect(typeof req.respond).toEqual("function");
+        });
+
+        it("can create a request with body data", function () {
+            var req = request.init({
+                    id: "ImTotallyUniqueISwear",
+                    url: "http://www.rim.com/icon.png",
+                    origin: "http://www.rim.com",
+                    body: "some=url&encoded=body"
+                });
+
+            expect(req.url).toBe("http://www.rim.com/icon.png");
+            expect(req.origin).toBe("http://www.rim.com");
+            expect(typeof req.allow).toEqual("function");
+            expect(typeof req.deny).toEqual("function");
+            expect(typeof req.substitute).toEqual("function");
+            expect(typeof req.respond).toEqual("function");
+            expect(req.body).toBe("some=url&encoded=body");
         });
     });
 

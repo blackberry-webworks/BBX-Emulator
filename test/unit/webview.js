@@ -291,4 +291,17 @@ describe("webview", function () {
             expect(message.send).toHaveBeenCalledWith("WebviewCustomHeadersChangeRequest", headers);
         });
     });
+
+    describe("executeJavascript", function () {
+        var message = require(srcPath + 'message');
+
+        it("sends the WebviewExecuteJavaScriptRequest message", function () {
+            var js = "alert('hey hey');";
+
+            spyOn(message, "send");
+
+            webview.executeJavascript(js);
+            expect(message.send).toHaveBeenCalledWith("WebviewExecuteJavaScriptRequest", js);
+        });
+    });
 });  
